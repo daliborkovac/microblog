@@ -1,0 +1,19 @@
+<p>Dear {{ user.nickname }},</p>
+{# By default, the url_for function generates URLs that are relative to the domain from which the current page
+   comes from. In an email there is no domain context, so we have to force fully qualified URLs that include
+   the domain, and the _external argument is just for that.
+#}
+<p><a href="{{ url_for('user', nickname=follower.nickname, _external=True) }}">{{ follower.nickname }}</a>
+    is now a follower.</p>
+<table>
+    <tr valign="top">
+        <td><img src="{{ follower.avatar(50) }}"</td>
+        <td>
+            <a href="{{ url_for('user', nickname=follower.nickname, _external=True) }}">{{ follower.nickname }}</a>
+            <br>
+            {{ follower.about_me }}
+        </td>
+    </tr>
+</table>
+<p>Regards,</p>
+<p>The <span style="color: red">Micro</span><span style="color: green">blog</span> admin</p>

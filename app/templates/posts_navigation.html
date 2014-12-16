@@ -1,0 +1,47 @@
+{# This is a sub-template for displaying post pages navigation links#}
+{% if posts.pages %}
+    {# macro for generating different url for different endpoint (user or index) #}
+    {% macro generate_url(page) -%}
+        {% if request.endpoint == 'index' %}
+            {{ url_for('index', page=page) }}
+        {% elif request.endpoint == 'user' %}
+            {{ url_for('user', nickname=user.nickname, page=page) }}
+        {% endif %}
+    {%- endmacro %}
+    <p>
+    <table>
+    <tr>
+       <td style="padding-right: 15px">
+       Page {{ posts.page }}/{{ posts.pages }}
+       </td><td><nav><ul class="pagination">
+         <li><a href="{{ generate_url(1) }}">First</a></li>
+         {% if posts.page==1 %}
+             <li class="disabled"><span>&laquo;</span></li>
+         {% else %}
+             <li><a href="{{ generate_url(posts.prev_num) }}">&laquo;</a></li>
+         {% endif %}
+         {% for page in posts.iter_pages() %}
+             <li
+             {% if page %}
+                  {% if page == posts.page %}
+                    class="active"
+                  {% endif %}
+                  ><a href="{{ generate_url(page) }}">{{ page }}</a>
+             {% else %}
+                  ><span class=ellipsis>…</span>
+             {% endif %}
+             </li>
+         {% endfor %}
+         {% if posts.page==posts.pages %}
+             <li class="disabled"><span>&raquo;</span></li>
+         {% else %}
+             <li><a href="{{ generate_url(posts.next_num) }}">&raquo;</a></li>
+         {% endif %}
+         <li><a href="{{ generate_url(posts.pages) }}">Last</a></li>
+         </ul></nav></td>
+    </tr>
+    </table>
+    </p>
+{% else %}
+    <p>No posts to display.</p>
+{% endif %}

@@ -1,0 +1,34 @@
+{%  extends "base.html" %}
+{# This is a template for user's edit profile page #}
+{% block content %}
+    <h1>Edit your profile {{ form.original_nickname }}</h1>
+    <form action="" method="post" name="edit">
+        {{ form.hidden_tag() }}
+        <table>
+            <tr>
+                <td>Your email:</td>
+                <td>{{ email }}</td>
+            </tr>
+            <tr>
+                <td style="padding-right: 10px">Your nickname:</td>
+                <td>{{ form.nickname(size=24) }}
+                    {% for error in form.nickname.errors %}
+                        <br><span style="color: red;">[{{ error }}]</span>
+                    {% endfor %}
+                </td>
+            </tr>
+            <tr>
+                <td>About yourself:</td>
+                <td>{{ form.about_me(cols=32, rows=4) }}
+                    {% for error in form.about_me.errors %}
+                        <br><span style="color: red;">[{{ error }}]</span>
+                    {% endfor %}
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><input type="submit" value="Save changes"></td>
+            </tr>
+        </table>
+    </form>
+{% endblock %}

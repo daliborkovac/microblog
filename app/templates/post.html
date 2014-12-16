@@ -1,0 +1,24 @@
+{# This is a sub-template for displaying a single post #}
+<div class="panel panel-default">
+  <div class="panel-body">
+    <table>
+        <tr valign="top">
+            <td><img src="{{ post.author.avatar(50) }}"></td>
+           <td style="padding-left: 10px"><i><a href="{{ url_for('user', nickname=post.author.nickname) }}">{{ post.author.nickname }}</a>
+                   said {{ momentjs(post.timestamp).fromNow() }} (language: {{ post.language }}):</i>
+               <br><span id="post{{ post.id }}">{{ post.body }}</span>
+               {% if post.language != g.locale and post.language != None and post.language != '' %}
+                   <br><span id="translation{{ post.id }}">
+                   <a href="javascript:translate('{{ post.language }}', '{{ g.locale }}',
+                                       '#post{{ post.id }}', '#translation{{ post.id }}', '#loading{{ post.id }}');">
+                       Translate</a></span>
+                   <img id="loading{{ post.id }}" style="display: none" src="/static/img/ajax-loader.gif">
+               {% endif %}
+               {% if post.author == g.user %}
+                    <br><a href="{{ url_for('delete', id=post.id) }}">Delete</a>
+               {% endif %}
+            </td>
+        </tr>
+    </table>
+  </div>
+</div>

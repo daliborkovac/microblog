@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+{# This is a Jinja2 comment. It will not show in generated HTML #}
+<!-- This is an HTML comment. It will show in generated HTML -->
+<head lang="en">
+
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="/static/css/bootstrap-theme.min.css">
+    <!-- compiled and minified JavaScript -->
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script src="/static/js/moment.min.js"></script>
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
+
+    {% if title %}
+        <title>{{ title }} - microblog</title>
+    {% else %}
+        <title>Welcome to microblog</title>
+    {% endif %}
+</head>
+<body>
+
+    <nav class="navbar navbar-inverse" role="navigation">
+      <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="{{ url_for('index') }}">
+            <span style="color: red">Micro</span><span style="color: green">blog</span>:
+          </a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="navbar">
+          <ul class="nav navbar-nav">
+            <li><a href="{{ url_for('index') }}">Home</a></li>
+            {# you can't use g.user is not None here, but this produces the same result #}
+            {% if g.user.is_authenticated() %}
+                <li><a href="{{ url_for('user', nickname=g.user.nickname) }}">Your profile</a></li>
+                <li><a href="{{ url_for('logout') }}">Logout</a></li>
+            {% endif %}
+          </ul>
+        </div><!-- /.navbar-collapse -->
+      </div><!-- /.container-fluid -->
+    </nav>
+
+    <div class="container">
+
+    {# This is where flashed messages will be shown (if any).
+       Flashed messages work like a stack - once they are displayed they are removed from the stack.
+       So, they will be displayed on the first page that gets rendered after they have been "flashed" (put
+       on the stack).
+    #}
+    {% with messages = get_flashed_messages(with_categories=True) %}
+        {% if messages %}
+            {% for message in messages %}
+                {% if message[0] == 'info' %}        {#  message category #}
+                   <div class="alert alert-info" role="alert">
+                {% else %}
+                   <div class="alert alert-danger" role="alert">
+                {% endif %}
+                {{ message[1] }}</div>                {# message text #}
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    {# This is where subordinate templates can insert their HTML.
+       "content" here is the name of the block, it's not a keyword.
+       It can be anything you want.
+    #}
+    {% block content %}{% endblock %}
+
+    </div><!-- /.container -->
+
+    <!-- ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="/static/js/bootstrap.min.js"></script></body>
+<script>
+function translate(sourceLang, destLang, sourceId, destId, loadingId) {
+    $(destId).hide();
+    $(loadingId).show();
+    $.post('/translate', {
+        text: $(sourceId).text(),
+        sourcelang: sourceLang,
+        destlang: destLang
+    }).done(function(translated) {
+        $(destId).text(translated['text'])
+        $(loadingId).hide();
+        $(destId).show();
+    }).fail(function() {
+        $(destId).text("Error: Could not contact server.");
+        $(loadingId).hide();
+        $(destId).show();
+    });
+}
+</script>
+</html>

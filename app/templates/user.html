@@ -1,0 +1,31 @@
+{%  extends "base.html" %}
+{# This is a template for user's profile page #}
+{% block content %}
+    {# we have the user's avatar and the information about the user #}
+    <table>
+        <tr valign="center">
+            <td><img src="{{ user.avatar(128) }}"></td>
+            <td style="padding-left: 15px"><h2>User: {{ user.nickname }}</h2>
+                {% if user == g.user %}<p>Email: {{ user.email }}</p>{% endif %}
+                {% if user.about_me %}<p>{{ user.about_me }}</p>{% endif %}
+                {% if user.last_seen %}<p><i>Last seen on: {{ momentjs(user.last_seen).format('LLLL') }}
+                                             ({{ momentjs(user.last_seen).calendar() }})</i></p>{% endif %}
+                <i>{{ user.followers.count() - 1 }} followers</i>
+                {% if user == g.user %}
+                    <p><a href="{{ url_for('edit') }}">Edit profile</a></p>
+                {% elif g.user.is_following(user) %}
+                   <p>You are following this user. <a href="{{ url_for('unfollow', nickname=user.nickname) }}">Unfollow</a></p>
+                {% else %}
+                    <p><a href="{{ url_for('follow', nickname=user.nickname) }}">Follow this user</a></p>
+                {% endif %}
+            </td>
+        </tr>
+    </table>
+    <hr>
+    {# and here we have recent posts by this user #}
+    <h2>User's posts:</h2>
+    {% for post in posts.items %}
+        {% include 'post.html' %}   {# we have included a sub-template here #}
+    {%  endfor %}
+    {% include 'posts_navigation.html' %}   {# we have included a sub-template here #}
+{% endblock %}

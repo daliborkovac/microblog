@@ -1,0 +1,33 @@
+{%  extends "base.html" %}
+
+{# "content" here is the name of the block, it's not a keyword. It can be anything you want. #}
+{%  block content %}
+    <h1>Hello, {{ user.nickname }}</h1>
+    <div style="padding-bottom: 30px">
+    <form class="form-horizontal" role="form" action="" method="post" name="post">
+        {{ form.hidden_tag() }}
+        <table>
+            <tr>
+                <td style="padding-right: 10px">Enter new post:</td>
+                <td>{{ form.post(size=30, maxlength=140) }}</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    {% for error in form.post.errors %}
+                        <span style="color: red;">[{{ error }}]</span><br>
+                    {% endfor %}
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><input type="submit" value="Submit post"></td>
+            </tr>
+        </table>
+    </form>
+    </div>
+    {% for post in posts.items %}
+        {% include 'post.html' %}
+    {% endfor %}
+    {% include 'posts_navigation.html' %}
+{% endblock %}
