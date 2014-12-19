@@ -127,7 +127,9 @@ def login():
         #     will call a function decorated with oid.after_login decorator, which will then return
         #     the redirect to the page we want to go after successful login.
         #     If login is not successful this OpenID call will redirect us back to login page.
-        return oid.try_login(form.openid.data, ask_for=['nickname', 'email'])
+        redirect_page = oid.try_login(form.openid.data, ask_for=['nickname', 'email'])
+        flash('oid error: {}'.format(oid.fetch_error()), 'error')
+        return redirect_page
     # If we're here then we one of these things happened:
     #    a) the login form is just opening, or
     #    b) form validation failed
@@ -146,7 +148,7 @@ def after_login(resp):
     """
     if resp.email is None or resp.email == "":
         # The OpenID call did not return an email
-        flash('Invalid login. Please try again')
+        flash('Invalid login. Please try again','error')
         # go back to login page
         return redirect(url_for('login'))
     # fetch user by email
